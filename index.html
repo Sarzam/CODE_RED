@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-kNOC | CON Hackathon</title>
+    <title>AI-kNOC | Confluent Hackathon</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* ═══════════════════════════════════════════════════════════════════════════
@@ -919,6 +919,16 @@
             transform: scale(1.02);
             box-shadow: 0 4px 16px rgba(108,192,74,0.2);
         }
+        .resources-btn.video-btn {
+            right: 268px;
+            background: linear-gradient(135deg, rgba(4,159,217,0.2), rgba(4,159,217,0.1));
+            border-color: rgba(4,159,217,0.3);
+            color: var(--cisco-teal);
+        }
+        .resources-btn.video-btn:hover {
+            border-color: var(--cisco-teal);
+            box-shadow: 0 4px 16px rgba(4,159,217,0.2);
+        }
 
         /* ── Resource Link Buttons (Closing Slide) ── */
         .resource-links {
@@ -1085,6 +1095,7 @@
             .slide-title { font-size: 1.8rem; }
             .theme-toggle { padding: 6px 12px; font-size: 0.7rem; }
             .resources-btn { right: 100px; padding: 6px 12px; font-size: 0.7rem; }
+            .resources-btn.video-btn { right: 200px; }
             .pipeline-sources { grid-template-columns: repeat(2, 1fr); }
             .ingest-grid { grid-template-columns: 1fr; }
         }
@@ -1114,6 +1125,12 @@
     </div>
 
     <!-- Resources Quick Link -->
+    <!-- Video Quick Link -->
+    <a href="presentation.mp4" class="resources-btn video-btn" target="_blank" rel="noopener noreferrer">
+        &#127909; Video
+    </a>
+
+    <!-- Architecture Quick Link -->
     <div class="resources-btn" onclick="jumpTo(4)">
         &#128279; Architecture
     </div>
@@ -1131,7 +1148,7 @@
         <div class="slide title-slide active" data-slide="0">
             <div class="title-badge">
                 <span class="pulse-dot"></span>
-                CON Hackathon 2026
+                Confluent Hackathon 2026
             </div>
             <div class="title-main">AI-kNOC</div>
             <div class="title-sub">AI Kafka Powered Network Operations Centre</div>
@@ -1542,7 +1559,7 @@
         <div class="slide title-slide" data-slide="closing">
             <div class="title-badge">
                 <span class="pulse-dot"></span>
-                CON Hackathon 2026
+                Confluent Hackathon 2026
             </div>
             <div class="title-main">Thank You</div>
             <div class="title-sub">AI Kafka Powered Network Operations Centre</div>
