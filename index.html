@@ -1141,9 +1141,10 @@
     </a>
 
     <!-- Video Quick Link -->
-    <a href="video.html" class="resources-btn video-btn" target="_blank" rel="noopener noreferrer">
+    <div class="resources-btn video-btn" onclick="openPresentationVideo()" role="button" tabindex="0"
+         onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openPresentationVideo(); }">
         &#127909; Video
-    </a>
+    </div>
 
     <!-- Architecture Quick Link -->
     <div class="resources-btn" onclick="jumpTo(4)">
@@ -1719,6 +1720,72 @@
 
         updateUI();
         setTimeout(() => fsHint.classList.add('hidden'), 5000);
+
+        function openPresentationVideo() {
+            const videoUrl = new URL('presentation.mov', window.location.href).href;
+            const viewer = window.open('', '_blank', 'noopener,noreferrer');
+            if (!viewer) {
+                alert('Please allow pop-ups to play the presentation video.');
+                return;
+            }
+            viewer.document.open();
+            viewer.document.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-kNOC Presentation Video</title>
+    <style>
+        * { margin: 0; box-sizing: border-box; }
+        body {
+            background: #070f1a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            font-family: Inter, system-ui, sans-serif;
+        }
+        h1 { color: rgba(255,255,255,0.9); font-size: 1rem; font-weight: 600; margin-bottom: 16px; }
+        video {
+            width: min(100%, 1200px);
+            max-height: calc(100vh - 80px);
+            border-radius: 12px;
+            background: #000;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+        }
+        .error {
+            color: #cf2020;
+            margin-top: 12px;
+            font-size: 0.9rem;
+            text-align: center;
+            max-width: 520px;
+            line-height: 1.5;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI-kNOC Presentation</h1>
+    <video id="player" controls autoplay playsinline preload="auto">
+        <source src="${videoUrl}" type="video/quicktime">
+        <source src="${videoUrl}" type="video/mp4">
+    </video>
+    <p class="error" id="videoError">
+        Unable to play this video in your browser. Try Safari, or open the file from the
+        <a href="https://github.com/Sarzam/CODE_RED" style="color:#00bceb">GitHub repo</a>.
+    </p>
+    <script>
+        const player = document.getElementById('player');
+        player.addEventListener('error', function () {
+            document.getElementById('videoError').style.display = 'block';
+        });
+    <\/script>
+</body>
+</html>`);
+            viewer.document.close();
+        }
 
         // Architecture tab switching
         function switchArch(view, tabEl) {
