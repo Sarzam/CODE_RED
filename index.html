@@ -1110,6 +1110,55 @@
             .pipeline-sources { grid-template-columns: repeat(2, 1fr); }
             .ingest-grid { grid-template-columns: 1fr; }
         }
+
+        /* ── Video player mode (?videoPlayer=1) ── */
+        .video-player-page {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: #070f1a;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            gap: 16px;
+        }
+        body.video-mode .video-player-page { display: flex; }
+        body.video-mode .bg-pattern,
+        body.video-mode .grid-overlay,
+        body.video-mode .mesh-gradient,
+        body.video-mode .particles,
+        body.video-mode .laser-toggle,
+        body.video-mode .theme-toggle,
+        body.video-mode .resources-btn,
+        body.video-mode .nav-arrow,
+        body.video-mode .progress-bar,
+        body.video-mode .slide-counter,
+        body.video-mode .watermark,
+        body.video-mode .fs-hint,
+        body.video-mode .slide-container { display: none !important; }
+        .video-player-page h1 {
+            color: rgba(255,255,255,0.9);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .video-player-page video {
+            width: min(100%, 1200px);
+            max-height: calc(100vh - 100px);
+            border-radius: 12px;
+            background: #000;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+        }
+        .video-player-error {
+            color: #cf2020;
+            font-size: 0.9rem;
+            text-align: center;
+            max-width: 520px;
+            line-height: 1.5;
+            display: none;
+        }
+        .video-player-error a { color: var(--cisco-teal); }
     </style>
 </head>
 <body>
@@ -1605,7 +1654,57 @@
 
     </div>
 
+    <!-- Video player (shown when opened via ?videoPlayer=1) -->
+    <div class="video-player-page" id="videoPlayerPage">
+        <h1>AI-kNOC Presentation</h1>
+        <video id="presentationVideo" controls autoplay playsinline preload="auto"></video>
+        <p class="video-player-error" id="videoLoadError">
+            Unable to load the presentation video. Ensure <strong>presentation.mov</strong> is in the same folder as this page,
+            or open it from the <a href="https://github.com/Sarzam/CODE_RED" target="_blank" rel="noopener noreferrer">GitHub repo</a>.
+        </p>
+    </div>
+
     <script>
+        const PRESENTATION_VIDEO_LOCAL = new URL('presentation.mov', window.location.href).href;
+        const PRESENTATION_VIDEO_REMOTE = 'https://github.com/Sarzam/CODE_RED/raw/main/presentation.mov';
+
+        function initVideoPlayerMode() {
+            if (new URLSearchParams(window.location.search).get('videoPlayer') !== '1') return;
+
+            document.body.classList.add('video-mode');
+            document.title = 'AI-kNOC Presentation Video';
+
+            const video = document.getElementById('presentationVideo');
+            const errorEl = document.getElementById('videoLoadError');
+            let triedRemote = false;
+
+            function loadVideo(url) {
+                video.src = url;
+                video.load();
+            }
+
+            video.addEventListener('error', () => {
+                if (!triedRemote) {
+                    triedRemote = true;
+                    loadVideo(PRESENTATION_VIDEO_REMOTE);
+                    return;
+                }
+                errorEl.style.display = 'block';
+            });
+
+            loadVideo(PRESENTATION_VIDEO_LOCAL);
+        }
+
+        initVideoPlayerMode();
+
+        function openPresentationVideo() {
+            const url = new URL(window.location.href);
+            url.search = '';
+            url.hash = '';
+            url.searchParams.set('videoPlayer', '1');
+            window.open(url.href, '_blank', 'noopener,noreferrer');
+        }
+
         // Theme management
         let isDarkTheme = true;
         
@@ -1720,72 +1819,6 @@
 
         updateUI();
         setTimeout(() => fsHint.classList.add('hidden'), 5000);
-
-        function openPresentationVideo() {
-            const videoUrl = new URL('presentation.mov', window.location.href).href;
-            const viewer = window.open('', '_blank', 'noopener,noreferrer');
-            if (!viewer) {
-                alert('Please allow pop-ups to play the presentation video.');
-                return;
-            }
-            viewer.document.open();
-            viewer.document.write(`<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-kNOC Presentation Video</title>
-    <style>
-        * { margin: 0; box-sizing: border-box; }
-        body {
-            background: #070f1a;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            font-family: Inter, system-ui, sans-serif;
-        }
-        h1 { color: rgba(255,255,255,0.9); font-size: 1rem; font-weight: 600; margin-bottom: 16px; }
-        video {
-            width: min(100%, 1200px);
-            max-height: calc(100vh - 80px);
-            border-radius: 12px;
-            background: #000;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-        }
-        .error {
-            color: #cf2020;
-            margin-top: 12px;
-            font-size: 0.9rem;
-            text-align: center;
-            max-width: 520px;
-            line-height: 1.5;
-            display: none;
-        }
-    </style>
-</head>
-<body>
-    <h1>AI-kNOC Presentation</h1>
-    <video id="player" controls autoplay playsinline preload="auto">
-        <source src="${videoUrl}" type="video/quicktime">
-        <source src="${videoUrl}" type="video/mp4">
-    </video>
-    <p class="error" id="videoError">
-        Unable to play this video in your browser. Try Safari, or open the file from the
-        <a href="https://github.com/Sarzam/CODE_RED" style="color:#00bceb">GitHub repo</a>.
-    </p>
-    <script>
-        const player = document.getElementById('player');
-        player.addEventListener('error', function () {
-            document.getElementById('videoError').style.display = 'block';
-        });
-    <\/script>
-</body>
-</html>`);
-            viewer.document.close();
-        }
 
         // Architecture tab switching
         function switchArch(view, tabEl) {
