@@ -929,6 +929,16 @@
             border-color: var(--cisco-teal);
             box-shadow: 0 4px 16px rgba(4,159,217,0.2);
         }
+        .resources-btn.repo-btn {
+            right: 420px;
+            background: linear-gradient(135deg, rgba(123,104,238,0.2), rgba(123,104,238,0.1));
+            border-color: rgba(123,104,238,0.3);
+            color: var(--cisco-purple);
+        }
+        .resources-btn.repo-btn:hover {
+            border-color: var(--cisco-purple);
+            box-shadow: 0 4px 16px rgba(123,104,238,0.2);
+        }
 
         /* ── Resource Link Buttons (Closing Slide) ── */
         .resource-links {
@@ -1096,6 +1106,7 @@
             .theme-toggle { padding: 6px 12px; font-size: 0.7rem; }
             .resources-btn { right: 100px; padding: 6px 12px; font-size: 0.7rem; }
             .resources-btn.video-btn { right: 200px; }
+            .resources-btn.repo-btn { right: 310px; }
             .pipeline-sources { grid-template-columns: repeat(2, 1fr); }
             .ingest-grid { grid-template-columns: 1fr; }
         }
@@ -1124,7 +1135,11 @@
         <span id="themeLabel">Light</span>
     </div>
 
-    <!-- Resources Quick Link -->
+    <!-- Repo Quick Link -->
+    <a href="https://github.com/Sarzam/CODE_RED" class="resources-btn repo-btn" target="_blank" rel="noopener noreferrer">
+        &#128279; Link to Repo
+    </a>
+
     <!-- Video Quick Link -->
     <a href="presentation.mov" class="resources-btn video-btn" target="_blank" rel="noopener noreferrer">
         &#127909; Video
