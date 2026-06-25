@@ -919,18 +919,8 @@
             transform: scale(1.02);
             box-shadow: 0 4px 16px rgba(108,192,74,0.2);
         }
-        .resources-btn.video-btn {
-            right: 268px;
-            background: linear-gradient(135deg, rgba(4,159,217,0.2), rgba(4,159,217,0.1));
-            border-color: rgba(4,159,217,0.3);
-            color: var(--cisco-teal);
-        }
-        .resources-btn.video-btn:hover {
-            border-color: var(--cisco-teal);
-            box-shadow: 0 4px 16px rgba(4,159,217,0.2);
-        }
         .resources-btn.repo-btn {
-            right: 420px;
+            right: 268px;
             background: linear-gradient(135deg, rgba(123,104,238,0.2), rgba(123,104,238,0.1));
             border-color: rgba(123,104,238,0.3);
             color: var(--cisco-purple);
@@ -1105,60 +1095,10 @@
             .slide-title { font-size: 1.8rem; }
             .theme-toggle { padding: 6px 12px; font-size: 0.7rem; }
             .resources-btn { right: 100px; padding: 6px 12px; font-size: 0.7rem; }
-            .resources-btn.video-btn { right: 200px; }
-            .resources-btn.repo-btn { right: 310px; }
+            .resources-btn.repo-btn { right: 200px; }
             .pipeline-sources { grid-template-columns: repeat(2, 1fr); }
             .ingest-grid { grid-template-columns: 1fr; }
         }
-
-        /* ── Video player mode (?videoPlayer=1) ── */
-        .video-player-page {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 2000;
-            background: #070f1a;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            gap: 16px;
-        }
-        body.video-mode .video-player-page { display: flex; }
-        body.video-mode .bg-pattern,
-        body.video-mode .grid-overlay,
-        body.video-mode .mesh-gradient,
-        body.video-mode .particles,
-        body.video-mode .laser-toggle,
-        body.video-mode .theme-toggle,
-        body.video-mode .resources-btn,
-        body.video-mode .nav-arrow,
-        body.video-mode .progress-bar,
-        body.video-mode .slide-counter,
-        body.video-mode .watermark,
-        body.video-mode .fs-hint,
-        body.video-mode .slide-container { display: none !important; }
-        .video-player-page h1 {
-            color: rgba(255,255,255,0.9);
-            font-size: 1rem;
-            font-weight: 600;
-        }
-        .video-player-page video {
-            width: min(100%, 1200px);
-            max-height: calc(100vh - 100px);
-            border-radius: 12px;
-            background: #000;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-        }
-        .video-player-error {
-            color: #cf2020;
-            font-size: 0.9rem;
-            text-align: center;
-            max-width: 520px;
-            line-height: 1.5;
-            display: none;
-        }
-        .video-player-error a { color: var(--cisco-teal); }
     </style>
 </head>
 <body>
@@ -1188,12 +1128,6 @@
     <a href="https://github.com/Sarzam/CODE_RED" class="resources-btn repo-btn" target="_blank" rel="noopener noreferrer">
         &#128279; Link to Repo
     </a>
-
-    <!-- Video Quick Link -->
-    <div class="resources-btn video-btn" onclick="openPresentationVideo()" role="button" tabindex="0"
-         onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openPresentationVideo(); }">
-        &#127909; Video
-    </div>
 
     <!-- Architecture Quick Link -->
     <div class="resources-btn" onclick="jumpTo(4)">
@@ -1654,57 +1588,7 @@
 
     </div>
 
-    <!-- Video player (shown when opened via ?videoPlayer=1) -->
-    <div class="video-player-page" id="videoPlayerPage">
-        <h1>AI-kNOC Presentation</h1>
-        <video id="presentationVideo" controls autoplay playsinline preload="auto"></video>
-        <p class="video-player-error" id="videoLoadError">
-            Unable to load the presentation video. Ensure <strong>presentation.mov</strong> is in the same folder as this page,
-            or open it from the <a href="https://github.com/Sarzam/CODE_RED" target="_blank" rel="noopener noreferrer">GitHub repo</a>.
-        </p>
-    </div>
-
     <script>
-        const PRESENTATION_VIDEO_LOCAL = new URL('presentation.mov', window.location.href).href;
-        const PRESENTATION_VIDEO_REMOTE = 'https://github.com/Sarzam/CODE_RED/raw/main/presentation.mov';
-
-        function initVideoPlayerMode() {
-            if (new URLSearchParams(window.location.search).get('videoPlayer') !== '1') return;
-
-            document.body.classList.add('video-mode');
-            document.title = 'AI-kNOC Presentation Video';
-
-            const video = document.getElementById('presentationVideo');
-            const errorEl = document.getElementById('videoLoadError');
-            let triedRemote = false;
-
-            function loadVideo(url) {
-                video.src = url;
-                video.load();
-            }
-
-            video.addEventListener('error', () => {
-                if (!triedRemote) {
-                    triedRemote = true;
-                    loadVideo(PRESENTATION_VIDEO_REMOTE);
-                    return;
-                }
-                errorEl.style.display = 'block';
-            });
-
-            loadVideo(PRESENTATION_VIDEO_LOCAL);
-        }
-
-        initVideoPlayerMode();
-
-        function openPresentationVideo() {
-            const url = new URL(window.location.href);
-            url.search = '';
-            url.hash = '';
-            url.searchParams.set('videoPlayer', '1');
-            window.open(url.href, '_blank', 'noopener,noreferrer');
-        }
-
         // Theme management
         let isDarkTheme = true;
         
